@@ -12,7 +12,7 @@ exports.getGlobalFeed = async (req, res) => {
 
     // ✅ Fetch only shorts (< 2min) with fileKey present
     const videos = await Download.aggregate([
-      { $match: { fileKey: { $ne: null }, duration: { $lte: 120 } } },
+      { $match: { fileKey: { $ne: null } } },
       { $sample: { size: limit } } // Random videos
     ]);
 
