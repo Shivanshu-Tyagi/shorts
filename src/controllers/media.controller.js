@@ -1,5 +1,5 @@
 const { GetObjectCommand, HeadObjectCommand } = require("@aws-sdk/client-s3");
-const { s3 } = require("../utils/s3client");
+const { s3 } = require("../services/s3.service");
 
 exports.streamVideo = async (req, res) => {
   try {
