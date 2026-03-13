@@ -1,25 +1,61 @@
-require("dotenv").config();
+# =========================
+# Node
+# =========================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-const mongoose = require("mongoose");
+# =========================
+# Environment
+# =========================
+.env
+.env.local
+.env.development
+.env.production
 
-async function startWorker() {
+# =========================
+# Firebase
+# =========================
+src/config/firebase-key.json
 
-  try {
+# =========================
+# Temp / Worker Files
+# =========================
+tmp/
+temp/
+uploads/
 
-    await mongoose.connect(process.env.MONGO_URL);
+# =========================
+# Logs
+# =========================
+*.log
+logs/
 
-    console.log("MongoDB connected (worker)");
+# =========================
+# OS Files
+# =========================
+.DS_Store
+Thumbs.db
 
-    require("./src/worker/download.worker");
+# =========================
+# IDE
+# =========================
+.idea/
+.vscode/
 
-    console.log("Worker started...");
+# =========================
+# Build
+# =========================
+dist/
+build/
 
-  } catch (err) {
+# =========================
+# Coverage
+# =========================
+coverage/
 
-    console.error("Worker DB connection error:", err);
-
-  }
-
-}
-
-startWorker();
+# =========================
+# Cache
+# =========================
+.cache/

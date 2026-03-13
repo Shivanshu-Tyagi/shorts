@@ -14,7 +14,7 @@ const DownloadSchema = new mongoose.Schema({
 
   downloadUrl: {
     type: String,
-    required: true
+    default: null
   },
 
   fileKey: {
@@ -77,7 +77,17 @@ const DownloadSchema = new mongoose.Schema({
     default: 0
   },
 
+  comments: {
+    type: Number,
+    default: 0
+  },
+
   shares: {
+    type: Number,
+    default: 0
+  },
+
+  saves: {
     type: Number,
     default: 0
   },
@@ -99,5 +109,9 @@ DownloadSchema.index({ deviceId: 1 });
 DownloadSchema.index({ createdAt: -1 });
 DownloadSchema.index({ platform: 1, sourceId: 1 });
 DownloadSchema.index({ status: 1 });
+DownloadSchema.index({ deviceId: 1, status: 1, createdAt: -1 });
+
+// feed optimization
+DownloadSchema.index({ status: 1, isDuplicate: 1, _id: -1 });
 
 module.exports = mongoose.model("Download", DownloadSchema);

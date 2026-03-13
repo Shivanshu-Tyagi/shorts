@@ -2,7 +2,6 @@ const Download = require("../models/download.model");
 
 /**
  * GET /history/:deviceId?limit=20&page=1
- * Fetch user's download history
  */
 exports.getHistory = async (req, res) => {
   try {
@@ -16,24 +15,26 @@ exports.getHistory = async (req, res) => {
       });
     }
 
-    // Pagination params
-    const limit = Math.min(parseInt(req.query.limit) || 20, 50); // max 50
+    const limit = Math.min(parseInt(req.query.limit) || 20, 50);
     const page = Math.max(parseInt(req.query.page) || 1, 1);
     const skip = (page - 1) * limit;
 
-    // ✅ Fetch history sorted by latest first
+    const query = {
+      deviceId,
+      status: "ready"
+    };
+
     const [history, totalCount] = await Promise.all([
       Download.find(
-        { deviceId },
+        query,
         {
-          deviceId: 1,
           originalUrl: 1,
-          downloadUrl: 1, // direct S3 URL
-          fileKey: 1,
           platform: 1,
           title: 1,
-          thumbnail: 1,
           duration: 1,
+          cdnUrl: 1,
+          thumbnailCdn: 1,
+          thumbnail: 1,
           createdAt: 1
         }
       )
@@ -42,8 +43,18 @@ exports.getHistory = async (req, res) => {
         .limit(limit)
         .lean(),
 
-      Download.countDocuments({ deviceId })
+      Download.countDocuments(query)
     ]);
+
+    const formattedHistory = history.map((item) => ({
+      id: item._id,
+      platform: item.platform,
+      title: item.title,
+      duration: item.duration,
+      videoUrl: item.cdnUrl,
+      thumbnail: item.thumbnailCdn || item.thumbnail,
+      createdAt: item.createdAt
+    }));
 
     const totalPages = Math.ceil(totalCount / limit);
 
@@ -51,16 +62,17 @@ exports.getHistory = async (req, res) => {
       success: true,
       code: "HISTORY_FETCHED",
       message: "Download history fetched successfully",
-      count: history.length,
+      count: formattedHistory.length,
       total: totalCount,
       page,
       limit,
       totalPages,
-      data: history
+      data: formattedHistory   // empty [] allowed
     });
 
   } catch (err) {
     console.error("History Error:", err);
+
     return res.status(500).json({
       success: false,
       code: "SERVER_ERROR",

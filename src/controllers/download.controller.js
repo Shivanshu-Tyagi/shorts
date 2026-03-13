@@ -83,18 +83,20 @@ exports.downloadVideo = async (req, res) => {
       sourceId,
       downloadUrl: apiDownloadUrl,
       fileKey,
+        title: result.title || "Untitled",
       thumbnail: result.thumbnail,
       duration: result.duration || 0,
       status: "pending",
     });
 
     // queue job
-    await downloadQueue.add("process-video", {
-      videoId: record._id,
-      videoUrl: apiDownloadUrl,
-      thumbnail: result.thumbnail,
-      fileKey,
-    });
+   await downloadQueue.add("process-video", {
+     videoId: record._id,
+     videoUrl: apiDownloadUrl,
+     fileKey,
+     deviceId,
+     title: result.title
+   });
 
     return res.json({
       success: true,
