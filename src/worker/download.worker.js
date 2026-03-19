@@ -155,9 +155,9 @@ const Download = require("../models/download.model");
 const Device = require("../models/device.model");
 
 const { uploadToS3 } = require("../services/s3.service");
-const { sendNotification } = require("../services/notification.service");
+// const { sendTopicNotification } = require("../services/notification.service");
 
-const templates = require("../templates/notification.templates");
+// const templates = require("../templates/notification.templates");
 
 const { connection } = require("../config/redis");
 
@@ -269,27 +269,22 @@ const worker = new Worker(
       console.log("DB Updated");
 
       // send notification
-      const device = await Device.findOne({ deviceId });
+      // const device = await Device.findOne({ deviceId });
 
-      if (device?.fcmToken) {
+      // if (device?.fcmToken) {
 
-        const template = templates.downloadSuccess(title || "Video");
+      //   const template = templates.downloadSuccess(title || "Video");
 
-        await sendNotification(
-          device.fcmToken,
-          template.title,
-          template.body,
-          {
-            type: "video",
-            videoUrl: cdnUrl,
-            thumbnail: thumbnailCdn,
-            title: title || "Video Ready"
-          }
-        );
+      //   await sendTopicNotification(
+      //     'all_user',
+      //     template.title,
+      //     template.body
+         
+      //   );
 
-        console.log("Notification sent");
+      //   console.log("Notification sent");
 
-      }
+      // }
 
       console.log("Job completed:", videoId);
 

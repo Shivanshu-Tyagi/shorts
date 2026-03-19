@@ -3,12 +3,6 @@ const router = express.Router();
 
 const deviceController = require("../controllers/device.controller");
 
-router.post("/device/register", (req,res,next)=>{
-
-  console.log("🔥 DEVICE REGISTER ROUTE HIT");
-
-  next();
-
-}, deviceController.registerDevice);
+router.post("/device/register", deviceController.registerDevice);
 
 module.exports = router;

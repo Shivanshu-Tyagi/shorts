@@ -1,5 +1,6 @@
 const admin = require("../config/firebase");
 const Device = require("../models/device.model");
+const templates = require("../templates/notification.templates");
 
 exports.registerDevice = async (req, res) => {
 
@@ -9,78 +10,65 @@ exports.registerDevice = async (req, res) => {
 
     if (!deviceId || !fcmToken) {
       return res.status(400).json({
-        success:false,
-        message:"deviceId and fcmToken required"
+        success: false,
+        message: "deviceId and fcmToken required"
       });
     }
 
     let device = await Device.findOne({ deviceId });
 
-    if (!device) {
+    if (device) {
+
+      console.log("Existing device found");
+
+      if (device.fcmToken !== fcmToken) {
+        device.fcmToken = fcmToken;
+        await device.save();
+        console.log("FCM token updated");
+      }
+
+    } else {
+
+      console.log("New device detected");
 
       device = await Device.create({
         deviceId,
         fcmToken
       });
 
-      // subscribe to topic
-      try {
+      console.log("Device saved in DB");
 
-        await admin.messaging().subscribeToTopic(
-          [fcmToken],
-          "all_users"
-        );
-
-        console.log("Device subscribed to topic");
-
-      } catch (err) {
-
-        console.error("Topic subscribe error:", err.message);
-
-      }
-
-      // send welcome notification
-      try {
-
-        await admin.messaging().send({
-          token: fcmToken,
-          notification: {
-            title: "🎉 Welcome to StackEarn",
-            body: "Download HD Shorts instantly 🚀"
-          },
-          data:{
-            type:"welcome"
-          }
-        });
-
-        console.log("Welcome notification sent");
-
-      } catch (err) {
-
-        console.error("Welcome notification error:", err.message);
-
-      }
-
-    } else {
-
-      device.fcmToken = fcmToken;
-      await device.save();
-
+      await admin.messaging().subscribeToTopic([fcmToken], "all_users");
     }
 
+    // ✅ Notification both cases
+    const message = {
+      token: fcmToken,
+      notification: {
+        title: templates.welcome.title,
+        body: templates.welcome.body
+      },
+      data: {
+        type: "welcome"
+      }
+    };
+
+    const response = await admin.messaging().send(message);
+
+    console.log("Notification sent:", response);
+
     return res.json({
-      success:true,
-      message:"Device registered",
-      data:fcmToken
+      success: true,
+      message: "Device registered successfully"
     });
 
   } catch (err) {
 
-    console.error("Device register error:", err);
+    console.error("Register error:", err);
 
     return res.status(500).json({
-      success:false,
-      message:"Device registration failed"
+      success: false,
+      message: "Server error"
     });
 
   }

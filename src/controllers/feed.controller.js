@@ -1,25 +1,42 @@
 const mongoose = require("mongoose");
 const Download = require("../models/download.model");
+const VideoLike = require("../models/videoLike.model");
+const VideoSave = require("../models/videoSave.model");
+
+// 🔹 Helper: Extract videoId from CDN URL
+const extractVideoIdFromUrl = (url) => {
+  if (!url) return null;
+
+  try {
+    const parts = url.split("/");
+    const fileName = parts[parts.length - 1]; // last part
+    return fileName.split(".")[0]; // remove extension
+  } catch (err) {
+    return null;
+  }
+};
 
 exports.getGlobalFeed = async (req, res) => {
   try {
-
-    const limit = Math.min(parseInt(req.query.limit) || 10, 20);
+    const deviceId = req.query.deviceId;
+    const limit = Math.min(parseInt(req.query.limit) || 4, 20);
     const cursor = req.query.cursor;
 
+    // 🔹 Base Query
     const query = {
       status: "ready",
       isDuplicate: false,
       cdnUrl: { $exists: true, $ne: null }
     };
 
-    // cursor pagination
+    // 🔹 Cursor Pagination
     if (cursor) {
       query._id = {
         $lt: new mongoose.Types.ObjectId(cursor)
       };
     }
 
+    // 🔹 Fetch Videos
     const videos = await Download.find(
       query,
       {
@@ -28,6 +45,7 @@ exports.getGlobalFeed = async (req, res) => {
         platform: 1,
         duration: 1,
         cdnUrl: 1,
+        videoId: 1, // 👈 if exists in DB
 
         views: 1,
         likes: 1,
@@ -43,31 +61,69 @@ exports.getGlobalFeed = async (req, res) => {
       .limit(limit)
       .lean();
 
+    // 🔹 Next Cursor
     const nextCursor =
       videos.length === limit
         ? videos[videos.length - 1]._id
         : null;
 
-    const feedData = videos.map(v => ({
-      id: v._id,
-      title: v.title || "Untitled",
-      thumbnail: v.thumbnailCdn,
-      platform: v.platform,
-      playUrl: v.cdnUrl,
-      stats: {
-        views: v.views || 0,
-        likes: v.likes || 0,
-        comments: v.comments || 0,
-        shares: v.shares || 0,
-        saves: v.saves || 0,
-        downloads: v.downloads || 0
-      },
+    let likedSet = new Set();
+    let savedSet = new Set();
 
-      createdAt: v.createdAt
-    }));
+    // 🔹 Like + Save Check
+    if (deviceId && videos.length) {
+      const videoIds = videos.map(v => v._id);
 
-    console.log(`Feed fetched: ${feedData.length} items`);
+      const [likes, saves] = await Promise.all([
+        VideoLike.find({
+          deviceId,
+          videoId: { $in: videoIds }
+        }).select("videoId"),
 
+        VideoSave.find({
+          deviceId,
+          videoId: { $in: videoIds }
+        }).select("videoId")
+      ]);
+
+      likedSet = new Set(likes.map(v => v.videoId.toString()));
+      savedSet = new Set(saves.map(v => v.videoId.toString()));
+    }
+
+    // 🔹 Final Response Mapping
+    const feedData = videos.map(v => {
+      // Prefer DB videoId, fallback to URL extraction
+      const videoId =
+        v.videoId || extractVideoIdFromUrl(v.cdnUrl);
+
+      return {
+        id: v._id,
+        videoId, // 👈 FINAL REQUIRED FIELD
+
+        title: v.title || "Untitled",
+        thumbnail: v.thumbnailCdn,
+        platform: v.platform,
+        duration: v.duration,
+
+        playUrl: v.cdnUrl,
+
+        stats: {
+          views: v.views || 0,
+          likes: v.likes || 0,
+          comments: v.comments || 0,
+          shares: v.shares || 0,
+          saves: v.saves || 0,
+          downloads: v.downloads || 0
+        },
+
+        hasLiked: likedSet.has(v._id.toString()),
+        hasSaved: savedSet.has(v._id.toString()),
+
+        createdAt: v.createdAt
+      };
+    });
+
+    // 🔹 Final Response
     res.json({
       success: true,
       count: feedData.length,
@@ -76,13 +132,11 @@ exports.getGlobalFeed = async (req, res) => {
     });
 
   } catch (err) {
-
     console.error("Feed Error:", err);
 
     res.status(500).json({
       success: false,
       message: "Failed to fetch shorts feed"
     });
-
   }
-};
+}; 

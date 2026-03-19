@@ -1,61 +1,44 @@
-# =========================
-# Node
-# =========================
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+require("dotenv").config();
 
-# =========================
-# Environment
-# =========================
-.env
-.env.local
-.env.development
-.env.production
+const mongoose = require("mongoose");
 
-# =========================
-# Firebase
-# =========================
-src/config/firebase-key.json
+async function startWorker() {
+  try {
 
-# =========================
-# Temp / Worker Files
-# =========================
-tmp/
-temp/
-uploads/
+    // MongoDB connect
+    await mongoose.connect(process.env.MONGO_URL, {
+      maxPoolSize: 10,
+      serverSelectionTimeoutMS: 5000
+    });
 
-# =========================
-# Logs
-# =========================
-*.log
-logs/
+    console.log("✅ MongoDB connected (worker)");
 
-# =========================
-# OS Files
-# =========================
-.DS_Store
-Thumbs.db
+    // start worker
+    require("./src/worker/download.worker");
 
-# =========================
-# IDE
-# =========================
-.idea/
-.vscode/
+    console.log("🚀 Worker started...");
 
-# =========================
-# Build
-# =========================
-dist/
-build/
+  } catch (err) {
+    console.error("❌ Worker DB connection error:", err);
+    process.exit(1);
+  }
+}
 
-# =========================
-# Coverage
-# =========================
-coverage/
+// global error handlers
+process.on("unhandledRejection", (err) => {
+  console.error("Unhandled Rejection:", err);
+});
 
-# =========================
-# Cache
-# =========================
-.cache/
+process.on("uncaughtException", (err) => {
+  console.error("Uncaught Exception:", err);
+  process.exit(1);
+});
+
+// graceful shutdown
+process.on("SIGINT", async () => {
+  console.log("Worker shutting down...");
+  await mongoose.connection.close();
+  process.exit(0);
+});
+
+startWorker();

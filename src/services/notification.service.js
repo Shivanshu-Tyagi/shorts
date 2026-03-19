@@ -3,27 +3,46 @@ const admin = require("../config/firebase");
 const sendTopicNotification = async (topic, title, body, data = {}) => {
 
   const message = {
-
-    topic,
+    topic: topic,
 
     notification: {
-      title,
-      body
+      title: title,
+      body: body
     },
 
-    data
+    data: data,
+
+    android: {
+      priority: "high",
+      notification: {
+        sound: "default",
+        channelId: "default"
+      }
+    },
+
+    apns: {
+      payload: {
+        aps: {
+          sound: "default"
+        }
+      }
+    }
 
   };
 
   try {
 
-    await admin.messaging().send(message);
+    const response = await admin.messaging().send(message);
 
-    console.log("Topic notification sent");
+    console.log("Topic notification sent:", response);
+
+    return response;
 
   } catch (err) {
 
-    console.error("Topic notification error:", err);
+    console.error("Topic notification error:", err.message);
+
+    throw err;
 
   }
 
