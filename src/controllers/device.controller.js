@@ -38,24 +38,45 @@ exports.registerDevice = async (req, res) => {
 
       console.log("Device saved in DB");
 
-      await admin.messaging().subscribeToTopic([fcmToken], "all_users");
+      try {
+        await admin.messaging().subscribeToTopic([fcmToken], "all_users");
+      } catch (e) {
+        console.log("Topic subscribe error:", e.message);
+      }
     }
 
-    // ✅ Notification both cases
-    const message = {
-      token: fcmToken,
-      notification: {
-        title: templates.welcome.title,
-        body: templates.welcome.body
-      },
-      data: {
-        type: "welcome"
+    // ✅ Send notification safely
+    try {
+
+      const message = {
+        token: fcmToken,
+        notification: {
+          title: templates.welcome.title,
+          body: templates.welcome.body
+        },
+        data: {
+          type: "welcome"
+        }
+      };
+
+      const response = await admin.messaging().send(message);
+
+      console.log("Notification sent:", response);
+
+    } catch (err) {
+
+      console.error("Notification error:", err.code);
+
+      // 🔥 IMPORTANT FIX
+      if (err.code === "messaging/registration-token-not-registered") {
+
+        console.log("Invalid token → removing from DB");
+
+        await Device.deleteOne({ deviceId });
+
       }
-    };
 
-    const response = await admin.messaging().send(message);
-
-    console.log("Notification sent:", response);
+    }
 
     return res.json({
       success: true,

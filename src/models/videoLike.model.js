@@ -2,7 +2,8 @@ const mongoose = require("mongoose");
 
 const schema = new mongoose.Schema({
   videoId: {
-    type: String,   
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Download",
     required: true,
     index: true
   },
@@ -15,4 +16,5 @@ const schema = new mongoose.Schema({
 
 schema.index({ videoId: 1, deviceId: 1 }, { unique: true });
 
-module.exports = mongoose.model("VideoLike", schema);
+// ✅ FIX HERE
+module.exports = mongoose.models.VideoLike || mongoose.model("VideoLike", schema);

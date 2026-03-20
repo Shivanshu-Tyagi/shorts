@@ -1,10 +1,9 @@
-// src/models/videoView.model.js
-
 const mongoose = require("mongoose");
 
 const schema = new mongoose.Schema({
   videoId: {
-    type: String,   // ✅ FIX
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Download",
     required: true,
     index: true
   },
@@ -15,7 +14,6 @@ const schema = new mongoose.Schema({
   }
 }, { timestamps: true });
 
-// ek device ek hi baar count hoga
 schema.index({ videoId: 1, deviceId: 1 }, { unique: true });
 
-module.exports = mongoose.model("VideoView", schema);
+module.exports = mongoose.models.VideoView || mongoose.model("VideoView", schema);

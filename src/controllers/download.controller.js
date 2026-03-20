@@ -30,29 +30,45 @@ exports.downloadVideo = async (req, res) => {
       status: "ready",
     });
 
-    if (existing) {
-      // save user history
-        const record=  await Download.create({
-        deviceId,
-        originalUrl: url,
-        platform,
-        sourceId,
-        downloadUrl: existing.cdnUrl, // IMPORTANT
-        cdnUrl: existing.cdnUrl,
-        thumbnail: existing.thumbnail,
-        thumbnailCdn: existing.thumbnailCdn,
-        title: existing.title,
-        duration: existing.duration,
-        status: "ready",
-        isDuplicate: true,
-      });
+if (existing) {
 
-      return res.json({
-        success: true,
-        message: "Video already processed",
-        data: record,
-      });
-    }
+  // 🔥 check if already saved by this device
+  const alreadySaved = await Download.findOne({
+    deviceId,
+    platform,
+    sourceId,
+  });
+
+  if (alreadySaved) {
+    return res.json({
+      success: true,
+      message: "Already saved in your history",
+      data: alreadySaved,
+    });
+  }
+
+  // ✅ create only if not exists
+  const record = await Download.create({
+    deviceId,
+    originalUrl: url,
+    platform,
+    sourceId,
+    downloadUrl: existing.cdnUrl,
+    cdnUrl: existing.cdnUrl,
+    thumbnail: existing.thumbnail,
+    thumbnailCdn: existing.thumbnailCdn,
+    title: existing.title,
+    duration: existing.duration,
+    status: "ready",
+    isDuplicate: true,
+  });
+
+  return res.json({
+    success: true,
+    message: "Video already processed",
+    data: record,
+  });
+}
 
     // call RapidAPI
     const result = await getVideoInfo(url);

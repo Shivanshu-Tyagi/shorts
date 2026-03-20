@@ -1,7 +1,7 @@
 module.exports = {
 
   welcome: {
-    title: "🎉 Welcome to Shorts Downloader App",
+    title: "🎉 Welcome to StackEarn",
     body: "Download HD Shorts without watermark 🚀"
   },
 
