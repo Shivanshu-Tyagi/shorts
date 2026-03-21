@@ -4,7 +4,6 @@ const downloadQueue = require("../queues/download.queue");
 const { getVideoInfo } = require("../services/rapidapi.service");
 const { extractSourceId } = require("../utils/sourceExtractor");
 
-
 /// DOWNLOAD SHORTS VIDEO
 exports.downloadVideo = async (req, res) => {
   const { url, deviceId } = req.body;
@@ -30,45 +29,44 @@ exports.downloadVideo = async (req, res) => {
       status: "ready",
     });
 
-if (existing) {
+    if (existing) {
+      // 🔥 check if already saved by this device
+      const alreadySaved = await Download.findOne({
+        deviceId,
+        platform,
+        sourceId,
+      });
 
-  // 🔥 check if already saved by this device
-  const alreadySaved = await Download.findOne({
-    deviceId,
-    platform,
-    sourceId,
-  });
+      if (alreadySaved) {
+        return res.json({
+          success: true,
+          message: "Already saved in your history",
+          data: alreadySaved,
+        });
+      }
 
-  if (alreadySaved) {
-    return res.json({
-      success: true,
-      message: "Already saved in your history",
-      data: alreadySaved,
-    });
-  }
+      // ✅ create only if not exists
+      const record = await Download.create({
+        deviceId,
+        originalUrl: url,
+        platform,
+        sourceId,
+        downloadUrl: existing.cdnUrl,
+        cdnUrl: existing.cdnUrl,
+        thumbnail: existing.thumbnail,
+        thumbnailCdn: existing.thumbnailCdn,
+        title: existing.title,
+        duration: existing.duration,
+        status: "ready",
+        isDuplicate: true,
+      });
 
-  // ✅ create only if not exists
-  const record = await Download.create({
-    deviceId,
-    originalUrl: url,
-    platform,
-    sourceId,
-    downloadUrl: existing.cdnUrl,
-    cdnUrl: existing.cdnUrl,
-    thumbnail: existing.thumbnail,
-    thumbnailCdn: existing.thumbnailCdn,
-    title: existing.title,
-    duration: existing.duration,
-    status: "ready",
-    isDuplicate: true,
-  });
-
-  return res.json({
-    success: true,
-    message: "Video already processed",
-    data: record,
-  });
-}
+      return res.json({
+        success: true,
+        message: "Video already processed",
+        data: record,
+      });
+    }
 
     // call RapidAPI
     const result = await getVideoInfo(url);
@@ -76,7 +74,7 @@ if (existing) {
     if (!result?.medias?.length) {
       return res.status(400).json({
         success: false,
-        message: "Video not found",
+        message: "No media found from API",
       });
     }
 
@@ -101,20 +99,32 @@ if (existing) {
       sourceId,
       downloadUrl: apiDownloadUrl,
       fileKey,
-        title: result.title || "Untitled",
+      title: result.title || "Untitled",
       thumbnail: result.thumbnail,
       duration: result.duration || 0,
       status: "pending",
     });
 
     // queue job
-   await downloadQueue.add("process-video", {
-     videoId: record._id,
-     videoUrl: apiDownloadUrl,
-     fileKey,
-     deviceId,
-     title: result.title
-   });
+    await downloadQueue.add(
+      "process-video",
+      {
+        videoId: record._id,
+        originalUrl: url, // 🔥 CHANGE
+        fileKey,
+        deviceId,
+        title: result.title,
+      },
+      {
+        attempts: 3,
+        backoff: {
+          type: "exponential",
+          delay: 5000,
+        },
+        removeOnComplete: true,
+        removeOnFail: false,
+      },
+    );
 
     return res.json({
       success: true,
@@ -130,5 +140,3 @@ if (existing) {
     });
   }
 };
-
-
