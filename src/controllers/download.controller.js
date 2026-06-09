@@ -15,12 +15,31 @@ exports.downloadVideo = async (req, res) => {
     });
   }
 
+
+
   try {
     // extract sourceId
     const sourceId = extractSourceId(url);
 
     // detect platform
     const platform = new URL(url).hostname;
+
+  const hostname = new URL(url).hostname.toLowerCase();
+
+if (
+  hostname.includes("youtube.com") ||
+  hostname.includes("youtu.be") ||
+    hostname.includes("m.youtube.com") ||
+    hostname.includes("www.youtube.com")
+) {
+  return res.status(400).json({
+    success: false,
+    message: "YouTube downloads are not supported.",
+  });
+}
+
+
+    
 
     // check duplicate
     const existing = await Download.findOne({
