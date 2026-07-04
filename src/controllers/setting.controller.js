@@ -2,6 +2,7 @@ const AdsConfig = require("../models/addconfig.model");
 
 exports.getAdsConfig = async (req, res) => {
 
+    
     try {
 
         return res.status(200).json({
@@ -20,14 +21,14 @@ exports.getAdsConfig = async (req, res) => {
 
                 forceUpdate: false,
 
-                latestVersion: "1.0.0",
+                latestVersion: "1.0.2",
 
                 minimumVersion: "1.0.0",
 
                 maintenance: {
-                    enabled: false,
-                    title: "",
-                    message: ""
+                    enabled: true,
+                    title: "App Under Maintenance",
+                    message: "We are upgrading our services to serve you better. The app will be available again shortly. Thank you for your patience."
                 },
 
                 ads: {
@@ -69,9 +70,9 @@ exports.getAdsConfig = async (req, res) => {
                 },
                    settings: {
 
-                    privacy: "support@stackearn.com",
+                    privacy: "https://shorts-downloader.vercel.app/privacy-policy",
 
-                    terms: "https://stackearn.com"
+                    terms: "https://shorts-downloader.vercel.app/privacy-policy"
 
                 }
 
