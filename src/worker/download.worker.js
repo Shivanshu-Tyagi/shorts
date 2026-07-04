@@ -94,7 +94,7 @@
 //         "video/mp4"
 //       );
 
-//       const cdnUrl = `https://${process.env.CDN_URL}/${fileKey}`;
+//       const cdnUrl = `https://${process.env.CDN_DOMAIN}/${fileKey}`;
 
 //       console.log("Video uploaded:", cdnUrl);
 
@@ -107,7 +107,7 @@
 //         "image/jpeg"
 //       );
 
-//       const thumbnailCdn = `https://${process.env.CDN_URL}/${thumbKey}`;
+//       const thumbnailCdn = `https://${process.env.CDN_DOMAIN}/${thumbKey}`;
 
 //       console.log("Updating DB...");
 
@@ -298,7 +298,7 @@ const downloadWorker = new Worker(
         "video/mp4"
       );
 
-      const cdnUrl = `https://${process.env.CDN_URL}/${fileKey}`;
+      const cdnUrl = `https://${process.env.CDN_DOMAIN}/${fileKey}`;
 
       // upload thumbnail
       const thumbKey = `thumbnails/${videoId}.jpg`;
@@ -309,7 +309,7 @@ const downloadWorker = new Worker(
         "image/jpeg"
       );
 
-      const thumbnailCdn = `https://${process.env.CDN_URL}/${thumbKey}`;
+      const thumbnailCdn = `https://${process.env.CDN_DOMAIN}/${thumbKey}`;
 
       // update DB
       await Download.updateOne(

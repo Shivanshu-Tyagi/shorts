@@ -129,7 +129,7 @@ if (
       "process-video",
       {
         videoId: record._id,
-        originalUrl: url, // 🔥 CHANGE
+        originalUrl: url,
         fileKey,
         deviceId,
         title: result.title,

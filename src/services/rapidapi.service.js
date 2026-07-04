@@ -1,3 +1,4 @@
+const axios = require("axios");
 exports.getVideoInfo = async (url, retries = 3) => {
   for (let i = 0; i < retries; i++) {
     try {

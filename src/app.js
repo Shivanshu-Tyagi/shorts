@@ -7,6 +7,7 @@ const downloadRoutes = require("./routes/download.routes");
 const deviceRoutes = require("./routes/device.routes");
 const statsRoutes = require("./routes/stats.routes");
 
+
 // start cron jobs
 require("./jobs/notification.cron");
 
@@ -19,6 +20,7 @@ app.use("/api", mediaRoutes);
 app.use("/api", downloadRoutes);
 app.use("/api", deviceRoutes);
 app.use("/api", statsRoutes);
+
 
 // health check
 app.get("/health", (req, res) => {
