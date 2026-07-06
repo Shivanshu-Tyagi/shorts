@@ -1,14 +1,12 @@
-const AdsConfig = require("../models/addconfig.model");
 
 exports.getAdsConfig = async (req, res) => {
 
-    
+
     try {
 
         return res.status(200).json({
             success: true,
             message: "Configuration fetched successfully.",
-
             data: {
 
                 appName: "Shorts Downloader",
@@ -24,9 +22,8 @@ exports.getAdsConfig = async (req, res) => {
                 latestVersion: "1.0.2",
 
                 minimumVersion: "1.0.0",
-
                 maintenance: {
-                    enabled: true,
+                    enabled: false,
                     title: "App Under Maintenance",
                     message: "We are upgrading our services to serve you better. The app will be available again shortly. Thank you for your patience."
                 },
