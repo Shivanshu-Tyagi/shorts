@@ -62,11 +62,13 @@ exports.getVydoAdsConfig = async (req, res) => {
                     website: "https://stackearn.com"
 
                 },
-                   settings: {
+                settings: {
 
                     privacy: "https://bydo-all-video-downloader.vercel.app/privacy-policy",
 
-                    terms: "https://bydo-all-video-downloader.vercel.app/privacy-policy"
+                    terms: "https://bydo-all-video-downloader.vercel.app/privacy-policy",
+                    whatsappNumber: "+917850972904",
+                    website: "https://shorts.stackearn.com"
 
                 }
 

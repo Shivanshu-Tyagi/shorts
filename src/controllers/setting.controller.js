@@ -63,13 +63,16 @@ exports.getAdsConfig = async (req, res) => {
                     email: "support@stackearn.com",
 
                     website: "https://stackearn.com"
+                    
 
                 },
                    settings: {
 
                     privacy: "https://shorts-downloader.vercel.app/privacy-policy",
 
-                    terms: "https://shorts-downloader.vercel.app/privacy-policy"
+                    terms: "https://shorts-downloader.vercel.app/privacy-policy",
+                    whatsappNumber: "+917850972904",
+                    website:"https://shorts.stackearn.com"
 
                 }
 
