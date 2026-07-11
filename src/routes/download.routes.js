@@ -1,14 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const controller = require("../controllers/download.controller");
-const downloadAllController = require("../controllers/downloadAll.controller");
+const downloadController = require("../controllers/downloadAll.controller");
 const history = require("../controllers/history.controller");
 const feedController = require("../controllers/feed.controller");
 const deviceController = require("../controllers/device.controller");
 
 router.post("/download", controller.downloadVideo);
-router.post("/download-all", downloadAllController.downloadAllVideo);
-
+router.post("/download-all", downloadController.downloadAllVideo);
 router.get("/history/:deviceId", history.getHistory);
 router.get("/feed", feedController.getGlobalFeed);
 router.post("/device/register", deviceController.registerDevice);
