@@ -77,6 +77,7 @@ exports.getAdsConfig = async (req, res) => {
                 }
 
             }
+            
 
         });
 
