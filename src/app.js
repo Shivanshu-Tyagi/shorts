@@ -17,14 +17,13 @@ const app = express();
 // CORS
 app.use(cors({
   origin: [
-    "https://e2d5942a-b0d1-4b6f-a3d9-2b630cd20b9a.lovableproject.com",
     "https://shorts.stackearn.com",
     "https://stackearn.com",
-    "https://www.stackearn.com"
+    "https://www.stackearn.com",
+    "https://e2d5942a-b0d1-4b6f-a3d9-2b630cd20b9a.lovableproject.com"
   ],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true
+  allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
 app.options("*", cors()); // Handle preflight requests
