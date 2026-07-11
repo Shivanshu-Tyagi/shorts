@@ -111,29 +111,49 @@ exports.downloadAllVideo = async (req, res) => {
 
         // queue job
         await downloadQueue.add(
-            "process-video",
+            "video-download",
             {
                 videoId: record._id,
                 originalUrl: url,
                 fileKey,
                 deviceId,
                 title: result.title,
-            },
-            {
-                attempts: 3,
-                backoff: {
-                    type: "exponential",
-                    delay: 5000,
-                },
-                removeOnComplete: true,
-                removeOnFail: false,
-            },
+            }
         );
+
+        // Wait max 30 sec
+        let readyVideo = null;
+
+        for (let i = 0; i < 30; i++) {
+
+            readyVideo = await Download.findById(record._id);
+
+            if (readyVideo && readyVideo.status === "ready") {
+                break;
+            }
+
+            await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+
+        if (!readyVideo || readyVideo.status !== "ready") {
+
+            return res.status(202).json({
+                success: false,
+                message: "Video is processing."
+            });
+
+        }
 
         return res.json({
             success: true,
-            message: "Video processing started",
-            data: record,
+            message: "Download Ready",
+            data: {
+                id: readyVideo._id,
+                downloadUrl: readyVideo.cdnUrl,
+                thumbnail: readyVideo.thumbnailCdn,
+                title: readyVideo.title,
+                duration: readyVideo.duration
+            }
         });
     } catch (err) {
         console.error("Download Error", err);
