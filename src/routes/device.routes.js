@@ -5,8 +5,6 @@ const deviceController = require("../controllers/device.controller");
 const settingController = require("../controllers/setting.controller");
 const vydoSettingController = require("../controllers/vydoSetting.controller");
 
-console.log(typeof deviceController.registerDevice);
-console.log(typeof settingController.getAdsConfig);
 
 router.post("/device/register", deviceController.registerDevice);
 
