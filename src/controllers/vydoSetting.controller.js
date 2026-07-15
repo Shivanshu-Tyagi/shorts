@@ -8,7 +8,7 @@ exports.getVydoAdsConfig = async (req, res) => {
 
                 appName: "VYDO - All Video Downloader",
 
-                appId: "com.stackearn.shorts_downloader",
+                appId: "com.vydo_all_video_downloader",
 
                 platform: "android",
 
@@ -26,15 +26,19 @@ exports.getVydoAdsConfig = async (req, res) => {
                 },
 
                 ads: {
+                       appId: {
+                        enabled: true,
+                        unitId: "ca-app-pub-8555885558581851~7050683565"
+                    },
 
                     banner: {
                         enabled: true,
-                        unitId: "ca-app-pub-9076860828061415/9646722049"
+                        unitId: "ca-app-pub-8555885558581851/1441766681"
                     },
 
                     interstitial: {
                         enabled: true,
-                        unitId: "ca-app-pub-9076860828061415/5707477035",
+                        unitId: "ca-app-pub-8555885558581851/5446947530",
                         afterClicks: 3,
                         afterDownloads: 1
                     },
@@ -46,19 +50,17 @@ exports.getVydoAdsConfig = async (req, res) => {
 
                     native: {
                         enabled: true,
-                        unitId: "ca-app-pub-9076860828061415/8364329884"
+                        unitId: "ca-app-pub-8555885558581851/6080418065"
                     },
 
                     appOpen: {
                         enabled: true,
-                        unitId: "ca-app-pub-9076860828061415/1731472922"
+                        unitId: "ca-app-pub-8555885558581851/2347654245"
                     }
 
                 },
                 support: {
-
                     email: "support@stackearn.com",
-
                     website: "https://stackearn.com"
 
                 },
@@ -68,7 +70,10 @@ exports.getVydoAdsConfig = async (req, res) => {
 
                     terms: "https://bydo-all-video-downloader.vercel.app/privacy-policy",
                     whatsappNumber: "+917850972904",
-                    website: "https://shorts.stackearn.com"
+                    website: "https://shorts.stackearn.com",
+                    playStoreLink: "https://play.google.com/store/apps/details?id=com.vydo_all_video_downloader",
+
+
 
                 }
 

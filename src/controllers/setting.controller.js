@@ -30,6 +30,10 @@ exports.getAdsConfig = async (req, res) => {
 
                 ads: {
 
+                    appId: {
+                        enabled: true,
+                        unitId: "ca-app-pub-8555885558581851~2700415604"
+                    },
                     banner: {
                         enabled: true,
                         unitId: "ca-app-pub-8555885558581851/8272002561"
@@ -63,21 +67,23 @@ exports.getAdsConfig = async (req, res) => {
                     email: "support@stackearn.com",
 
                     website: "https://stackearn.com"
-                    
+
 
                 },
-                   settings: {
+                settings: {
 
                     privacy: "https://shorts-downloader.vercel.app/privacy-policy",
 
                     terms: "https://shorts-downloader.vercel.app/privacy-policy",
                     whatsappNumber: "+917850972904",
-                    website:"https://shorts.stackearn.com"
+                    website: "https://shorts.stackearn.com",
+                    playStoreLink: "https://play.google.com/store/apps/details?id=com.vydo_all_video_downloader",
+
 
                 }
 
             }
-            
+
 
         });
 

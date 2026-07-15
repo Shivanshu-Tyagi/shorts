@@ -90,6 +90,13 @@ exports.downloadAllVideo = async (req, res) => {
             videos.find((v) => v.quality === "watermark") ||
             videos[0];
 
+        if (!selectedFormat || !selectedFormat.url) {
+            return res.status(400).json({
+                success: false,
+                message: "No valid downloadable video found."
+            });
+        }
+
         const apiDownloadUrl = selectedFormat.url;
 
         const videoId = uuidv4();
@@ -123,25 +130,21 @@ exports.downloadAllVideo = async (req, res) => {
 
         // Wait max 30 sec
         let readyVideo = null;
-
         for (let i = 0; i < 30; i++) {
 
             readyVideo = await Download.findById(record._id);
+
+            console.log(
+                "Poll:", i,
+                "Status:", readyVideo?.status,
+                "CDN:", readyVideo?.cdnUrl
+            );
 
             if (readyVideo && readyVideo.status === "ready") {
                 break;
             }
 
             await new Promise(resolve => setTimeout(resolve, 1000));
-        }
-
-        if (!readyVideo || readyVideo.status !== "ready") {
-
-            return res.status(202).json({
-                success: false,
-                message: "Video is processing."
-            });
-
         }
 
         return res.json({
