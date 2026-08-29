@@ -1,51 +1,60 @@
 const admin = require("../config/firebase");
 
-const sendTopicNotification = async (topic, title, body, data = {}) => {
-
+const sendTopicNotification = async (
+  topic,
+  title,
+  body,
+  data = {}
+) => {
   const message = {
-    topic: topic,
-
+    topic,
     notification: {
-      title: title,
-      body: body
+      title,
+      body,
     },
-
-    data: data,
-
+    data: Object.fromEntries(
+      Object.entries(data).map(([key, value]) => [
+        key,
+        String(value),
+      ])
+    ),
     android: {
       priority: "high",
       notification: {
         sound: "default",
-        channelId: "default"
-      }
+        channelId: "default",
+      },
     },
-
     apns: {
       payload: {
         aps: {
-          sound: "default"
-        }
-      }
-    }
-
+          sound: "default",
+        },
+      },
+    },
   };
 
   try {
-
-    const response = await admin.messaging().send(message);
+    const response =
+      await admin.messaging().send(message);
 
     console.log("Topic notification sent:", response);
 
-    return response;
-
+    return {
+      success: true,
+      messageId: response,
+    };
   } catch (err) {
-
-    console.error("Topic notification error:", err.message);
+    console.error(
+      "Topic notification error:",
+      err.message
+    );
 
     throw err;
-
   }
-
 };
 
-module.exports = { sendTopicNotification };
+
+module.exports = {
+  sendTopicNotification
+};
