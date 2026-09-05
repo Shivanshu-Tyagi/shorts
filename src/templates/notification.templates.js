@@ -46,4 +46,12 @@ youtubeDownload: {
   title: "🎬 YouTube & YT Shorts Download अब LIVE!",
   body: "अब YouTube Videos और Shorts दोनों आसानी से डाउनलोड करें ⚡ अभी Try करें और Fast Download का मज़ा लें! 🚀",
 },
+
+
+youtubeUpadte: {
+  title: "🎬 YouTube Videos Download करना अब हुआ आसान! 🚀",
+  body: "📥 YouTube Videos & Shorts आसानी से Download करें 👉 अभी ऐप खोलें और अपना पसंदीदा वीडियो डाउनलोड करें! 🚀",
+},
+
+
 };

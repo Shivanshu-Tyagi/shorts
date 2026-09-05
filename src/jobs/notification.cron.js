@@ -176,8 +176,8 @@ const initCronJobs = () => {
         const response =
           await sendTopicNotification(
             "all_users",
-            templates.youtubeDownload.title,
-            templates.youtubeDownload.body
+            templates.youtubeUpadte.title,
+            templates.youtubeUpadte.body
           );
       } catch (error) {
         console.error(
@@ -192,14 +192,16 @@ const initCronJobs = () => {
   );
 
 
-// /// NEW RELASE UPDATE JOB 
+
+/// NEW RELASE UPDATE JOB 
 // cron.schedule(
-//   "30 24 13 * * *",
+//   " 33 21 * * *",
 //   async () => {
 //     try {
 //       console.log(
 //         "Starting Shorts Update Notification"
 //       );
+
 
 //       const result =
 //         await shortsUpdateNotificationJob();
