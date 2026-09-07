@@ -31,17 +31,17 @@ exports.downloadVideo = async (req, res) => {
 
     const hostname = new URL(url).hostname.toLowerCase();
 
-    if (
-      hostname.includes("youtube.com") ||
-      hostname.includes("youtu.be") ||
-      hostname.includes("m.youtube.com") ||
-      hostname.includes("www.youtube.com")
-    ) {
-      return res.status(400).json({
-        success: false,
-        message: "YouTube downloads are not supported.",
-      });
-    }
+    // if (
+    //   hostname.includes("youtube.com") ||
+    //   hostname.includes("youtu.be") ||
+    //   hostname.includes("m.youtube.com") ||
+    //   hostname.includes("www.youtube.com")
+    // ) {
+    //   return res.status(400).json({
+    //     success: false,
+    //     message: "YouTube downloads are not supported.",
+    //   });
+    // }
 
     
 
