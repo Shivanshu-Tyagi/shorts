@@ -32,16 +32,16 @@ exports.getAdsConfig = async (req, res) => {
 
                     appId: {
                         enabled: true,
-                        unitId: "ca-app-pub-8555885558581851~2700415604"
+                        unitId: "ca-app-pub-1736153103436707~8699226986"
                     },
                     banner: {
                         enabled: true,
-                        unitId: "ca-app-pub-3413420770089708/9904784483"
+                        unitId: "ca-app-pub-1736153103436707/2243780642"
                     },
 
                     interstitial: {
                         enabled: true,
-                        unitId: "ca-app-pub-3413420770089708/4681751116",
+                        unitId: "ca-app-pub-1736153103436707/9930698975",
                         afterClicks: 3,
                         afterDownloads: 1
                     },
@@ -53,12 +53,12 @@ exports.getAdsConfig = async (req, res) => {
 
                     native: {
                         enabled: true,
-                        unitId: "ca-app-pub-3413420770089708/8429424432"
+                        unitId: "ca-app-pub-1736153103436707/1741569414"
                     },
 
                     appOpen: {
                         enabled: true,
-                        unitId: "ca-app-pub-3413420770089708/5321174667"
+                        unitId: "ca-app-pub-1736153103436707/8617617309"
                     }
 
                 },
