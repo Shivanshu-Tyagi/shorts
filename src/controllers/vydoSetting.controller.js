@@ -33,12 +33,12 @@ exports.getVydoAdsConfig = async (req, res) => {
 
                     banner: {
                         enabled: true,
-                        unitId: "ca-app-pub-8555885558581851/1441766681"
+                        unitId: "ca-app-pub-3413420770089708/9509288924"
                     },
 
                     interstitial: {
                         enabled: true,
-                        unitId: "ca-app-pub-8555885558581851/5446947530",
+                        unitId: "ca-app-pub-3413420770089708/8252047572",
                         afterClicks: 3,
                         afterDownloads: 1
                     },
@@ -50,12 +50,12 @@ exports.getVydoAdsConfig = async (req, res) => {
 
                     native: {
                         enabled: true,
-                        unitId: "ca-app-pub-8555885558581851/6080418065"
+                        unitId: "ca-app-pub-3413420770089708/6689156648"
                     },
 
                     appOpen: {
                         enabled: true,
-                        unitId: "ca-app-pub-8555885558581851/2347654245"
+                        unitId: "ca-app-pub-3413420770089708/6657718707"
                     }
 
                 },
