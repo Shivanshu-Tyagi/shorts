@@ -19,7 +19,7 @@ sudo systemctl enable --now redis-server   # binds to localhost by default; skip
 
 ## 3. App
 ```bash
-git clone https://github.com/BhimSingh123/shorts.git && cd shorts
+git clone -b deploy-ec2 https://github.com/Shivanshu-Tyagi/shorts.git && cd shorts
 npm ci --omit=dev
 cp .env.example .env && nano .env
 ```
