@@ -56,6 +56,20 @@ const DownloadSchema = new mongoose.Schema({
     type: String
   },
 
+  // Link to the canonical reusable record (video_assets.key). Optional: rows
+  // created before the optimisation simply don't have it.
+  assetKey: {
+    type: String,
+    default: undefined
+  },
+
+  // Which app made the request ("shorts" | "vydo"); set only for quota-aware clients.
+  // Used by the worker to settle (commit/release) the download-quota reservation.
+  appId: {
+    type: String,
+    default: undefined
+  },
+
   isDuplicate: {
     type: Boolean,
     default: false
@@ -112,6 +126,13 @@ DownloadSchema.index({ createdAt: -1 });
 DownloadSchema.index({ platform: 1, sourceId: 1 });
 DownloadSchema.index({ status: 1 });
 DownloadSchema.index({ deviceId: 1, status: 1, createdAt: -1 });
+
+// one history row per device per canonical video (partial => legacy rows unaffected)
+DownloadSchema.index(
+  { deviceId: 1, assetKey: 1 },
+  { unique: true, partialFilterExpression: { assetKey: { $type: "string" } } }
+);
+DownloadSchema.index({ assetKey: 1, status: 1 }, { partialFilterExpression: { assetKey: { $type: "string" } } });
 
 // feed optimization
 DownloadSchema.index({ status: 1, isDuplicate: 1, _id: -1 });

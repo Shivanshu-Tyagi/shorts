@@ -1,10 +1,21 @@
+const { safeDownloaderSettings } = require("../services/downloaderSettings");
+const { buildAppExtras } = require("../services/appConfigExtras");
 exports.getVydoAdsConfig = async (req, res) => {
     try {
+
+        const extras = await buildAppExtras("vydo", req);
 
         return res.status(200).json({
             success: true,
             message: "Configuration fetched successfully.",
             data: {
+
+                // Additive: downloader optimisation settings (see docs/OPTIMIZATION.md)
+                downloader: safeDownloaderSettings(),
+
+                // Additive: dynamic download limits + (when ?deviceId= is sent) that device's quota state
+                downloadLimits: extras.downloadLimits,
+                downloadQuota: extras.downloadQuota,
 
                 appName: "VYDO - All Video Downloader",
 
@@ -43,10 +54,7 @@ exports.getVydoAdsConfig = async (req, res) => {
                         afterDownloads: 1
                     },
 
-                    rewarded: {
-                        enabled: false,
-                        unitId: ""
-                    },
+                    rewarded: extras.rewarded,
 
                     native: {
                         enabled: true,

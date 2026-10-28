@@ -1,0 +1,109 @@
+{
+  "node": "v22.22.2",
+  "generatedAt": "2026-10-13T18:28:28.625Z",
+  "note": "after = measured; before = modelled from the original source; store latency 0ms; fake provider latency 120ms",
+  "latency": {
+    "providerLatencyMs_fakeInjected": 120,
+    "cacheMiss": {
+      "n": 25,
+      "avgMs": 127.538,
+      "p50Ms": 124.55,
+      "p95Ms": 129.509,
+      "maxMs": 186.654
+    },
+    "cacheHit_newDevice": {
+      "n": 1000,
+      "avgMs": 0.123,
+      "p50Ms": 0.079,
+      "p95Ms": 0.156,
+      "maxMs": 5.144
+    },
+    "cacheHit_sameDevice": {
+      "n": 1000,
+      "avgMs": 0.081,
+      "p50Ms": 0.057,
+      "p95Ms": 0.107,
+      "maxMs": 6.826
+    },
+    "providerLatencyObserved": {
+      "count": 25,
+      "avgMs": 125.97,
+      "p50Ms": 122.75,
+      "p95Ms": 128.18,
+      "maxMs": 180.55
+    },
+    "providerCallsTotal": 25
+  },
+  "dbOpsPerRequest": {
+    "cacheMiss": {
+      "assetOps": 5,
+      "rowOps": 2
+    },
+    "cacheHit_newDevice": {
+      "assetOps": 0,
+      "rowOps": 2
+    },
+    "cacheHit_sameDevice": {
+      "assetOps": 0,
+      "rowOps": 1
+    }
+  },
+  "concurrency": {
+    "sameVideo_oneProcess": {
+      "requests": 100,
+      "wallMs": 154.3,
+      "providerCalls": 1,
+      "jobsEnqueued": 1
+    },
+    "sameVideo_fourInstancesSharedLease": {
+      "requests": 100,
+      "instances": 4,
+      "wallMs": 180.2,
+      "providerCalls": 1,
+      "lockPolls": 18
+    },
+    "hundredDistinctVideos": {
+      "requests": 100,
+      "wallMs": 329.5,
+      "providerCalls": 100,
+      "jobsEnqueued": 100
+    }
+  },
+  "providerCalls": [
+    {
+      "scenario": "1 new video, success",
+      "before_modelled": 2,
+      "after_measured": 1
+    },
+    {
+      "scenario": "same video again by 10 other devices after it finished (exact same URL)",
+      "before_modelled": 2,
+      "after_measured": 1
+    },
+    {
+      "scenario": "same video again, URL spelled differently (bare host / tracking / /p/ vs /reel/)",
+      "before_modelled": 4,
+      "after_measured": 1
+    },
+    {
+      "scenario": "10 devices request the same NEW video at the same moment",
+      "before_modelled": 20,
+      "after_measured": 1
+    },
+    {
+      "scenario": "same device taps download 3x while it is processing",
+      "before_modelled": 6,
+      "after_measured": 1
+    },
+    {
+      "scenario": "provider down, 1 request",
+      "before_modelled": 3,
+      "after_measured": 2
+    },
+    {
+      "scenario": "provider OK for the API call but media fetch fails in worker (3 BullMQ attempts)",
+      "before_modelled": 10,
+      "after_measured": 1
+    }
+  ]
+}
